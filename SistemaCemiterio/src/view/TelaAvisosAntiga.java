@@ -2,59 +2,28 @@ package view;
 
 
 import dao.ServicoDao;
-import factory.DAOFactory;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
+import model.Sepultura;
 import model.Servico;
 import model.Usuario;
-import model.Administrador;
-import model.Manutencao;
-import model.Atendente;
-import model.Financeiro;
-import observer.GerenciadorNotificacoes;
-import observer.ObserverAdministrador;
-import observer.ObserverManutencao;
-import observer.ObserverAtendente;
-import observer.ObserverFinanceiro;
+import view.Menu;
 
 public class TelaAvisos extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaAvisos.class.getName());
     
     private Usuario usuarioAutenticado;
-
-    // PADRÃO FACTORY METHOD: fábrica centraliza a criação dos DAOs
-    private final DAOFactory daoFactory = DAOFactory.getFactory();
-
-    //construtor que está recebendo o usuario que foi autenticado na tela de login
+    
+     //construtor que está recebendo o usuario que foi autenticado na tela de login
     public TelaAvisos(Usuario usuario){
         initComponents();
         this.usuarioAutenticado = usuario;
-
-        // PADRÃO OBSERVER: registra o observer adequado ao perfil do usuário logado
-        registrarObserverDoPerfil(usuario);
-
         preencherTabelaAvisos();
-    }
-
-    /**
-     * PADRÃO OBSERVER: registra o observer correto com base no perfil do usuário.
-     * Cada perfil tem um comportamento diferente ao receber notificações.
-     */
-    private void registrarObserverDoPerfil(Usuario usuario) {
-        GerenciadorNotificacoes gerenciador = GerenciadorNotificacoes.getInstance();
-
-        if (usuario instanceof Administrador) {
-            gerenciador.registrarObserver(new ObserverAdministrador(usuario.getNomeUsuario()));
-        } else if (usuario instanceof Manutencao) {
-            gerenciador.registrarObserver(new ObserverManutencao(usuario.getNomeUsuario()));
-        } else if (usuario instanceof Atendente) {
-            gerenciador.registrarObserver(new ObserverAtendente(usuario.getNomeUsuario()));
-        } else if (usuario instanceof Financeiro) {
-            gerenciador.registrarObserver(new ObserverFinanceiro(usuario.getNomeUsuario()));
-        }
-    }
+        } 
     
     private void preencherTabelaAvisos() {
     DefaultTableModel modeloPendentes = (DefaultTableModel) tblServicosPendentes.getModel();
@@ -62,8 +31,7 @@ public class TelaAvisos extends javax.swing.JFrame {
     modeloPendentes.setRowCount(0);
     modeloGeral.setRowCount(0);
     
-    // FACTORY METHOD: obtém o DAO pela fábrica em vez de instanciar diretamente
-    ServicoDao sDao = daoFactory.criarServicoDao();
+    ServicoDao sDao = new ServicoDao();
 
     
     for (Servico s : sDao.listarTodos()) {

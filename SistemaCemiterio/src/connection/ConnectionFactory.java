@@ -12,10 +12,10 @@ import java.sql.SQLException;
  * @author Váleria Matias
  */
 public class ConnectionFactory {
-    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost:3306/sistema_cemiterio";
+    private static final String DRIVER = "org.mariadb.jdbc.Driver";
+    private static final String URL = "jdbc:mariadb://localhost:3306/sistema_cemiterio";
     private static final String USER = "root";
-    private static final String PASS = "1234";
+    private static final String PASS = "#S3nh4$D1f1c1l#";
 
     public static Connection getConnection(){
     

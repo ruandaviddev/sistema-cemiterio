@@ -3,7 +3,6 @@ package view;
 
 import dao.SepulturaDao;
 import dao.ServicoDao;
-import factory.DAOFactory;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -12,16 +11,13 @@ import javax.swing.table.DefaultTableModel;
 import model.Sepultura;
 import model.Servico;
 import model.Usuario;
-import observer.GerenciadorNotificacoes;
+import view.Menu;
 
 public class TelaServico extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TelaServico.class.getName());
     
     private Usuario usuarioAutenticado;
-
-    // PADRÃO FACTORY METHOD: a fábrica centraliza a criação dos DAOs
-    private final DAOFactory daoFactory = DAOFactory.getFactory();
     
      //construtor que está recebendo o usuario que foi autenticado na tela de login
     public TelaServico(Usuario usuario){
@@ -96,16 +92,9 @@ public class TelaServico extends javax.swing.JFrame {
             }
 
             
-            // FACTORY METHOD: obtém o DAO pela fábrica, sem acoplar à implementação concreta
-            ServicoDao dao = daoFactory.criarServicoDao();
+            //Cria o objeto Dao e depois chama o metodo de dao, inserir;
+           ServicoDao dao = new ServicoDao();
             dao.inserir(se);
-
-            // OBSERVER: notifica todos os perfis registrados sobre o novo serviço
-            String tipoSvc = se.getTipoServico();
-            String statusSvc = se.getStatusServico();
-            GerenciadorNotificacoes.getInstance()
-                .notificarObservers("Novo serviço agendado: " + tipoSvc + " | Status: " + statusSvc);
-
             //metodo listar e limpar campo
             listar();
             carregarSepulturas();
@@ -170,13 +159,8 @@ public class TelaServico extends javax.swing.JFrame {
             se.setStatusServico("Concluído");
         }
 
-        // FACTORY METHOD: obtém o DAO pela fábrica
-        ServicoDao dao = daoFactory.criarServicoDao();
+        ServicoDao dao = new ServicoDao();
         dao.atualizar(se);
-
-        // OBSERVER: notifica sobre a atualização do serviço
-        GerenciadorNotificacoes.getInstance()
-            .notificarObservers("Serviço atualizado: " + se.getTipoServico() + " | Status: " + se.getStatusServico());
 
         listar();
         carregarSepulturas();
@@ -195,8 +179,7 @@ public class TelaServico extends javax.swing.JFrame {
         try {
             int id = Integer.parseInt(tblServicos.getValueAt(row, 0).toString());
 
-            // FACTORY METHOD: obtém o DAO pela fábrica
-            ServicoDao dao = daoFactory.criarServicoDao();
+            ServicoDao dao = new ServicoDao();
             dao.deletar(id);
 
             listar();
@@ -212,8 +195,7 @@ public class TelaServico extends javax.swing.JFrame {
             DefaultTableModel modelo = (DefaultTableModel) tblServicos.getModel();
             modelo.setRowCount(0);
 
-            // FACTORY METHOD: obtém o DAO pela fábrica
-            ServicoDao dao = daoFactory.criarServicoDao();
+            ServicoDao dao = new ServicoDao();
             List<Servico> lista = dao.listarTodos();
 
             for (Servico s : lista) {
@@ -307,8 +289,7 @@ public class TelaServico extends javax.swing.JFrame {
      //carrega as sepultura para o serviços
     private void carregarSepulturas() {
         try {
-            // FACTORY METHOD: obtém o DAO pela fábrica
-            SepulturaDao dao = daoFactory.criarSepulturaDao();
+            SepulturaDao dao = new SepulturaDao();
 
             // listarTodos() garante que tanto as livres (para novos) quanto as ocupadas (para quem já está na tabela) apareçam.
             List<Sepultura> lista = dao.listarTodos();
