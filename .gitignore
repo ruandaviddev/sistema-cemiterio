@@ -10,3 +10,9 @@ SistemaCemiterio/dist/
 # Arquivos privados específicos
 SistemaCemiterio/nbproject/private/private.properties
 SistemaCemiterio/nbproject/private/private.xml
+
+
+# IntelliJ
+.idea/
+out/
+*.iml
